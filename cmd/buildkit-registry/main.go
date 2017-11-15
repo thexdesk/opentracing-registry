@@ -28,9 +28,7 @@ func run() error {
 		return err
 	}
 
-	sc := llb.Scratch().
-		With(copyAll(*registry, "/"))
-
+	sc := llb.Scratch().With(copyAll(*registry, "/"))
 	dt, err := sc.Marshal()
 	if err != nil {
 		panic(err)
