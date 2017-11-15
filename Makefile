@@ -19,3 +19,7 @@ clean:
 	@echo "+ $@"
 	@rm -rf "${PREFIX}/bin/registry"
 
+vendor:
+	@echo "+ $@"
+	@./hack/update-vendor
+

@@ -5,6 +5,6 @@ RUN go get -d github.com/LK4D4/vndr \
   && cd /go/src/github.com/LK4D4/vndr \
 	&& git checkout $VNDR_VERSION \
 	&& go install ./
-WORKDIR /go/src/github.com/hinshun/opentracing-registry
-COPY . .
+WORKDIR /go/src/github.com/hinshun/opentracing-registry/cmd/registry
+COPY ./cmd/registry .
 RUN vndr --verbose
