@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/docker/distribution"
-	"github.com/opencontainers/go-digest"
+	"github.com/docker/distribution/digest"
 )
 
 type blobStore struct {

@@ -18,6 +18,7 @@ import (
 	_ "github.com/docker/distribution/registry/storage/driver/s3-aws"
 	_ "github.com/docker/distribution/registry/storage/driver/s3-goamz"
 	_ "github.com/docker/distribution/registry/storage/driver/swift"
+	_ "github.com/hinshun/opentracing-registry/opentracingmiddleware"
 )
 
 func main() {
