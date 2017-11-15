@@ -20,7 +20,7 @@ func run() error {
 
 	registry, err := gb.BuildExe(gobuild.BuildOpt{
 		Source:    src,
-		MountPath: "/go/src/github.com/hinshun/opentracing-registry/cmd/registry",
+		MountPath: "/go/src/github.com/hinshun/opentracing-registry",
 		Pkg:       "github.com/hinshun/opentracing-registry/cmd/registry",
 		BuildTags: []string{},
 	})
