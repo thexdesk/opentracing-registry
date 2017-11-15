@@ -18,15 +18,6 @@ $ docker run -d --name buildkit --privileged -p 1234:1234 tonistiigi/buildkit:st
 $ export BUILDKIT_HOST=tcp://0.0.0.0:1234
 ```
 
-Buildkit depends on a specific `runc` version, so we need to build and install that.
-```
-$ go get -d github.com/opencontainers/runc
-$ cd $GOPATH/src/github.com/opencontainers/runc
-$ git checkout 74a17296470088de3805e138d3d87c62e613dfc4
-$ make
-$ sudo make install
-```
-
 Make!
 ```
 $ make
