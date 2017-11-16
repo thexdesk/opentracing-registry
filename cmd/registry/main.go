@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "net/http/pprof"
+	"os"
 
 	"github.com/docker/distribution/registry"
 	_ "github.com/docker/distribution/registry/auth/htpasswd"
