@@ -25,7 +25,7 @@ import (
 
 func main() {
 	lightstepTracer := lightstep.NewTracer(lightstep.Options{
-		AccessToken: "2aab059cac4f594c5b1ce1975053a0d4",
+		AccessToken: os.Getenv("LIGHTSTEP_ACCESS_TOKEN"),
 	})
 	opentracing.SetGlobalTracer(lightstepTracer)
 	registry.RootCmd.Execute()

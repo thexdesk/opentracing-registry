@@ -30,7 +30,7 @@ func main() {
 
 	ctx := context.Background()
 	lightstepTracer := lightstep.NewTracer(lightstep.Options{
-		AccessToken: "2aab059cac4f594c5b1ce1975053a0d4",
+		AccessToken: os.Getenv("LIGHTSTEP_ACCESS_TOKEN"),
 	})
 	defer lightstepTracer.Close(ctx)
 
