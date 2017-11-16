@@ -17,5 +17,5 @@ health:
     interval: 10s
     threshold: 3
 middleware:
-  registry:
+  repository:
       - name: opentracing

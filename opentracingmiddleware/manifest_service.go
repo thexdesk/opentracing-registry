@@ -18,12 +18,12 @@ func (s *manifestService) Exists(ctx context.Context, dgst digest.Digest) (bool,
 
 // Get retrieves the manifest specified by the given digest
 func (s *manifestService) Get(ctx context.Context, dgst digest.Digest, options ...distribution.ManifestServiceOption) (distribution.Manifest, error) {
-	return s.ManifestService.Get(ctx, dgst, options)
+	return s.ManifestService.Get(ctx, dgst, options...)
 }
 
 // Put creates or updates the given manifest returning the manifest digest
-func (s *manifestService) Put(ctx context.Context, manifest Manifest, options ...distribution.ManifestServiceOption) (digest.Digest, error) {
-	return s.ManifestService.Put(ctx, manifest, options)
+func (s *manifestService) Put(ctx context.Context, manifest distribution.Manifest, options ...distribution.ManifestServiceOption) (digest.Digest, error) {
+	return s.ManifestService.Put(ctx, manifest, options...)
 }
 
 // Delete removes the manifest specified by the given digest. Deleting

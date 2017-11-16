@@ -33,7 +33,7 @@ func (s *blobStore) Open(ctx context.Context, dgst digest.Digest) (distribution.
 // Put inserts the content p into the blob service, returning a descriptor
 // or an error.
 func (s *blobStore) Put(ctx context.Context, mediaType string, p []byte) (distribution.Descriptor, error) {
-	return s.BlobStore.Put(ctx, dgst)
+	return s.BlobStore.Put(ctx, mediaType, p)
 }
 
 // Create allocates a new blob writer to add a blob to this service. The
@@ -41,12 +41,12 @@ func (s *blobStore) Put(ctx context.Context, mediaType string, p []byte) (distri
 // identifier. With this approach, one can Close and Resume a BlobWriter
 // multiple times until the BlobWriter is committed or cancelled.
 func (s *blobStore) Create(ctx context.Context, options ...distribution.BlobCreateOption) (distribution.BlobWriter, error) {
-	return s.BlobStore.Create(ctx, dgst)
+	return s.BlobStore.Create(ctx, options...)
 }
 
 // Resume attempts to resume a write to a blob, identified by an id.
 func (s *blobStore) Resume(ctx context.Context, id string) (distribution.BlobWriter, error) {
-	return s.BlobStore.Resume(ctx, dgst)
+	return s.BlobStore.Resume(ctx, id)
 }
 
 // ServeBlob attempts to serve the blob, identifed by dgst, via http. The
@@ -62,7 +62,7 @@ func (s *blobStore) Resume(ctx context.Context, id string) (distribution.BlobWri
 // domain. The appropriate headers will be set for the blob, unless they
 // have already been set by the caller.
 func (s *blobStore) ServeBlob(ctx context.Context, w http.ResponseWriter, r *http.Request, dgst digest.Digest) error {
-	return s.BlobStore.ServeBlob(ctx, dgst)
+	return s.BlobStore.ServeBlob(ctx, w, r, dgst)
 }
 
 func (s *blobStore) Delete(ctx context.Context, dgst digest.Digest) error {
