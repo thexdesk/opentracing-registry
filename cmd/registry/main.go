@@ -19,8 +19,14 @@ import (
 	_ "github.com/docker/distribution/registry/storage/driver/s3-goamz"
 	_ "github.com/docker/distribution/registry/storage/driver/swift"
 	_ "github.com/hinshun/opentracing-registry/opentracingmiddleware"
+	"github.com/lightstep/lightstep-tracer-go"
+	"github.com/opentracing/opentracing-go"
 )
 
 func main() {
+	lightstepTracer := lightstep.NewTracer(lightstep.Options{
+		AccessToken: "2aab059cac4f594c5b1ce1975053a0d4",
+	})
+	opentracing.SetGlobalTracer(lightstepTracer)
 	registry.RootCmd.Execute()
 }

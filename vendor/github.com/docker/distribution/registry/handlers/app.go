@@ -38,6 +38,9 @@ import (
 	"github.com/docker/libtrust"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/mux"
+	"github.com/hinshun/opentracing-registry/cmd/dockerpush/xmetaheaders"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"github.com/sirupsen/logrus"
 )
 
@@ -599,8 +602,22 @@ func (app *App) configureSecret(configuration *configuration.Configuration) {
 func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() // ensure that request body is always closed.
 
+	logrus.Info("Opentracing!")
+	logrus.Infof("Headers: %s", r.Header)
+
+	carrier := xmetaheaders.XMetaHeadersCarrier{
+		TextMapReader: opentracing.HTTPHeadersCarrier(r.Header),
+	}
+	wireContext, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, carrier)
+	if err != nil {
+		logrus.Warnf("failed to extract opentracing headers: %s", err)
+	}
+
+	span := opentracing.StartSpan("App.ServeHTTP", ext.RPCServerOption(wireContext))
+	defer span.Finish()
+
 	// Prepare the context with our own little decorations.
-	ctx := r.Context()
+	ctx := opentracing.ContextWithSpan(r.Context(), span)
 	ctx = dcontext.WithRequest(ctx, r)
 	ctx, w = dcontext.WithResponseWriter(ctx, w)
 	ctx = dcontext.WithLogger(ctx, dcontext.GetRequestLogger(ctx))
