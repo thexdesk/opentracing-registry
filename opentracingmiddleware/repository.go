@@ -39,7 +39,7 @@ func (r *opentracingRepository) Manifests(ctx context.Context, options ...distri
 
 	return &manifestService{
 		ManifestService: manifests,
-	}, nil
+	}, err
 }
 
 // Blobs returns a reference to this repository's blob service.

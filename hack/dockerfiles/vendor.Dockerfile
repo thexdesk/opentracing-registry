@@ -7,4 +7,4 @@ RUN go get -d github.com/LK4D4/vndr \
 	&& go install ./
 WORKDIR /go/src/github.com/hinshun/opentracing-registry
 COPY . .
-RUN vndr --verbose
+RUN vndr --verbose --whitelist "opentracing-go/ext" --whitelist "x/text"

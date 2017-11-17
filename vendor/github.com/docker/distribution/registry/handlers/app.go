@@ -41,6 +41,7 @@ import (
 	"github.com/hinshun/opentracing-registry/cmd/dockerpush/xmetaheaders"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"github.com/opentracing/opentracing-go/log"
 	"github.com/sirupsen/logrus"
 )
 
@@ -602,9 +603,6 @@ func (app *App) configureSecret(configuration *configuration.Configuration) {
 func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() // ensure that request body is always closed.
 
-	logrus.Info("Opentracing!")
-	logrus.Infof("Headers: %s", r.Header)
-
 	carrier := xmetaheaders.XMetaHeadersCarrier{
 		TextMapReader: opentracing.HTTPHeadersCarrier(r.Header),
 	}
@@ -615,6 +613,11 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	span := opentracing.StartSpan("App.ServeHTTP", ext.RPCServerOption(wireContext))
 	defer span.Finish()
+	span.LogFields(
+		log.String("headers", fmt.Sprintf("%s", r.Header)),
+		log.String("method", r.Method),
+		log.String("url", r.URL.String()),
+	)
 
 	// Prepare the context with our own little decorations.
 	ctx := opentracing.ContextWithSpan(r.Context(), span)

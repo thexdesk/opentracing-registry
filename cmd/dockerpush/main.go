@@ -15,6 +15,10 @@ import (
 	"github.com/palantir/stacktrace"
 )
 
+const (
+	pushImage = "ubuntu"
+)
+
 func main() {
 	// span := opentracing.SpanFromContext(ctx)
 	// if span != nil {
@@ -48,21 +52,21 @@ func push(ctx context.Context, host string) error {
 		return stacktrace.Propagate(err, "failed to create docker client from env")
 	}
 
-	pullStream, err := cli.ImagePull(ctx, "alpine", types.ImagePullOptions{})
+	pullStream, err := cli.ImagePull(ctx, pushImage, types.ImagePullOptions{})
 	if err != nil {
-		return stacktrace.Propagate(err, "failed to initiate image pull 'alpine'")
+		return stacktrace.Propagate(err, "failed to initiate image pull '%s'", pushImage)
 	}
 
-	// Complete `docker pull alpine`.
+	// Complete `docker pull pushImage`.
 	_, err = ioutil.ReadAll(pullStream)
 	if err != nil {
 		return stacktrace.Propagate(err, "failed to read image pull stream")
 	}
 
-	pushTag := fmt.Sprintf("%s/opentracing/alpine", host)
-	err = cli.ImageTag(ctx, "alpine", pushTag)
+	pushTag := fmt.Sprintf("%s/opentracing/%s", host, pushImage)
+	err = cli.ImageTag(ctx, pushImage, pushTag)
 	if err != nil {
-		return stacktrace.Propagate(err, "failed to tag alpine")
+		return stacktrace.Propagate(err, "failed to tag '%s'", pushImage)
 	}
 
 	encodedAuth, err := command.EncodeAuthToBase64(types.AuthConfig{})
@@ -81,7 +85,7 @@ func push(ctx context.Context, host string) error {
 		return stacktrace.Propagate(err, "failed to initiate image push '%s'", pushTag)
 	}
 
-	// Complete `docker push host/opentracing/alpine`.
+	// Complete `docker push host/opentracing/pushImage`.
 	_, err = ioutil.ReadAll(pushStream)
 	if err != nil {
 		return stacktrace.Propagate(err, "failed to read image push stream")

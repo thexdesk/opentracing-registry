@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	_ "net/http/pprof"
 	"os"
 
@@ -25,9 +26,34 @@ import (
 )
 
 func main() {
+	// defer r.Body.Close() // ensure that request body is always closed.
+
+	// carrier := xmetaheaders.XMetaHeadersCarrier{
+	// 	TextMapReader: opentracing.HTTPHeadersCarrier(r.Header),
+	// }
+	// wireContext, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, carrier)
+	// if err != nil {
+	// 	logrus.Warnf("failed to extract opentracing headers: %s", err)
+	// }
+
+	// span := opentracing.StartSpan("App.ServeHTTP", ext.RPCServerOption(wireContext))
+	// defer span.Finish()
+	// span.LogFields(
+	// 	log.String("headers", fmt.Sprintf("%s", r.Header)),
+	// 	log.String("method", r.Method),
+	// 	log.String("url", r.URL.String()),
+	// )
+
+	// // Prepare the context with our own little decorations.
+	// ctx := opentracing.ContextWithSpan(r.Context(), span)
+
+	ctx := context.Background()
 	lightstepTracer := lightstep.NewTracer(lightstep.Options{
 		AccessToken: os.Getenv("LIGHTSTEP_ACCESS_TOKEN"),
 	})
+	defer lightstepTracer.Close(ctx)
+
 	opentracing.SetGlobalTracer(lightstepTracer)
+
 	registry.RootCmd.Execute()
 }

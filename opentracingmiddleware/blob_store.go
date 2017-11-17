@@ -70,7 +70,14 @@ func (s *blobStore) Create(ctx context.Context, options ...distribution.BlobCrea
 	span, ctx := opentracing.StartSpanFromContext(ctx, "BlobStore.Create")
 	defer span.Finish()
 
-	return s.BlobStore.Create(ctx, options...)
+	w, err := s.BlobStore.Create(ctx, options...)
+	if err != nil {
+		return w, err
+	}
+
+	return &blobWriter{
+		BlobWriter: w,
+	}, err
 }
 
 // Resume attempts to resume a write to a blob, identified by an id.
@@ -81,7 +88,14 @@ func (s *blobStore) Resume(ctx context.Context, id string) (distribution.BlobWri
 		log.String("id", id),
 	)
 
-	return s.BlobStore.Resume(ctx, id)
+	w, err := s.BlobStore.Resume(ctx, id)
+	if err != nil {
+		return w, err
+	}
+
+	return &blobWriter{
+		BlobWriter: w,
+	}, err
 }
 
 // ServeBlob attempts to serve the blob, identifed by dgst, via http. The
